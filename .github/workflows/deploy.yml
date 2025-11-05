@@ -23,7 +23,7 @@ jobs:
           distribution: "temurin"
 
       - name: Build with Maven
-        working-directory: ./bktutor
+        working-directory: ./bktutor_backend
         run: mvn clean package -DskipTests
 
       - name: Copy JAR to EC2
