@@ -36,6 +36,7 @@ public abstract class User implements Serializable {
     private boolean isActive = true;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @CreationTimestamp
