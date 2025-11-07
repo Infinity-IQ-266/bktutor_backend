@@ -11,7 +11,7 @@
 	<groupId>com.hnam</groupId>
 	<artifactId>bktutor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>sprint-api</name>
+	<name>bk-tutor</name>
 	<description>Backend API for Code Camp 2025 Submission</description>
 	<url/>
 	<licenses>

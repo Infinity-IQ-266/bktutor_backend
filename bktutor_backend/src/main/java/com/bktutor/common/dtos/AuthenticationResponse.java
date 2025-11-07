@@ -14,5 +14,5 @@ public class AuthenticationResponse {
     private String token;
     private Long userId;
     private String fullName;
-    private String faculty;
+    private String departmentName;
 }

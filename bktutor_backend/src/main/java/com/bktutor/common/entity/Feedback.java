@@ -2,13 +2,15 @@ package com.bktutor.common.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "feedbacks")
 @Data
-public class Feedback {
+public class Feedback extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,9 +20,6 @@ public class Feedback {
 
     @Column(columnDefinition = "TEXT")
     private String comment;
-
-    @CreationTimestamp
-    private LocalDateTime createdAt;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id", nullable = false)

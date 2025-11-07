@@ -1,32 +1,40 @@
 package com.bktutor.common.entity;
 
 import com.bktutor.common.enums.BookingStatus;
+import com.bktutor.common.enums.BookingType;
 import jakarta.persistence.*;
 import lombok.Data;
-import java.time.LocalDateTime;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "bookings")
 @Data
-public class Booking {
+public class Booking extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String subject;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private String type; //"IN_PERSON", "ONLINE"
-    private String locationOrLink;
 
     @Enumerated(EnumType.STRING)
+    private BookingType type;
+
+    private String locationOrLink;
+
+    @Column(columnDefinition = "TEXT")
+    private String studentNotes;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private BookingStatus status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
-    @ManyToOne
-    @JoinColumn(name = "tutor_id", nullable = false)
-    private Tutor tutor;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "slot_id", nullable = false, unique = true)
+    private AvailabilitySlot slot;
 }

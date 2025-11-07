@@ -1,12 +1,10 @@
 package com.bktutor.common.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -31,6 +29,16 @@ public class Tutor extends User {
 
     @OneToMany(mappedBy = "assignedTutor")
     private List<Student> assignedStudents;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "tutor_subjects",
+            joinColumns = @JoinColumn(name = "tutor_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id")
+    )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<Subject> subjects;
 
     @OneToMany(mappedBy = "tutor")
     private List<AvailabilitySlot> availabilitySlots;

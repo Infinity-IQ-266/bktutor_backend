@@ -89,7 +89,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .token(token)
                 .userId(user.getId())
                 .fullName(user.getFullName())
-                .faculty(departmentName)
+                .departmentName(departmentName)
                 .build();
     }
 }
