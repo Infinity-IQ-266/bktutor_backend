@@ -42,7 +42,4 @@ public class Tutor extends User {
 
     @OneToMany(mappedBy = "tutor")
     private List<AvailabilitySlot> availabilitySlots;
-
-    @OneToMany(mappedBy = "tutor")
-    private List<Booking> bookings;
 }
