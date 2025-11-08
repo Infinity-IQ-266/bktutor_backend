@@ -61,6 +61,7 @@ public class BookingServiceImpl implements BookingService {
 
         newBooking.setStudent(student);
         newBooking.setSlot(slot);
+
         if (createDto.getSubject() != null) {
             newBooking.setSubject(createDto.getSubject());
         }
@@ -158,7 +159,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Page<BookingDto> getMyBookings(String username, BookingSearchDto request) {
-        Specification<Booking> specification = BookingSpecification.belongsToStudent(username)
+        Specification<Booking> specification = BookingSpecification.belongsToUser(username)
                 .and(BookingSpecification.hasSubjectLike(request.getSubjectName()))
                 .and(BookingSpecification.hasStatus(request.getStatus()))
                 .and(BookingSpecification.hasType(request.getType()));
@@ -167,6 +168,7 @@ public class BookingServiceImpl implements BookingService {
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sortable);
 
         Page<Booking> bookings = bookingRepository.findAll(specification, pageable);
+
         return bookings.map(bookingConverter::convertToDTO);
     }
 }
