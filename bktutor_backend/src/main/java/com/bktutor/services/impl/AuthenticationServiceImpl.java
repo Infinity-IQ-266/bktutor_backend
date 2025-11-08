@@ -4,11 +4,13 @@ package com.bktutor.services.impl;
 import com.bktutor.common.dtos.AuthenticationResponse;
 import com.bktutor.common.dtos.LoginRequest;
 import com.bktutor.common.dtos.RegisterRequest;
+import com.bktutor.common.dtos.UserDetailDto;
 import com.bktutor.common.entity.Student;
 import com.bktutor.common.entity.Tutor;
 import com.bktutor.common.entity.User;
 import com.bktutor.common.enums.ErrorMessage;
 import com.bktutor.common.enums.Role;
+import com.bktutor.converter.UserConverter;
 import com.bktutor.exception.BadRequestException;
 import com.bktutor.exception.NotFoundException;
 import com.bktutor.repository.UserRepository;
@@ -33,11 +35,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final JwtService jwtService;
 
-    public AuthenticationServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService) {
+    private final UserConverter userConverter;
+
+    public AuthenticationServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService, UserConverter userConverter) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+        this.userConverter = userConverter;
     }
 
     public AuthenticationResponse registerUser(@Valid RegisterRequest request) {
@@ -91,5 +96,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .fullName(user.getFullName())
                 .departmentName(departmentName)
                 .build();
+    }
+
+    @Override
+    public UserDetailDto getMe(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND));
+
+        return userConverter.convertToDTO(user);
     }
 }

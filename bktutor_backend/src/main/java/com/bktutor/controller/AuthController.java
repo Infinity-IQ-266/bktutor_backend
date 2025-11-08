@@ -5,12 +5,10 @@ import com.bktutor.common.dtos.LoginRequest;
 import com.bktutor.common.dtos.RegisterRequest;
 import com.bktutor.response.Response;
 import com.bktutor.services.AuthenticationService;
+import com.bktutor.utils.SecurityUtil;
 import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -30,5 +28,11 @@ public class AuthController {
     @PostMapping("/login")
     public Response login(@Valid @RequestBody LoginRequest request) {
         return new Response(authenticationService.login(request));
+    }
+
+    @GetMapping("/me")
+    public Response getMyInfo() {
+        String username = SecurityUtil.getUsername();
+        return new Response(authenticationService.getMe(username));
     }
 }
