@@ -8,13 +8,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+
 @Repository
 public interface TutorRepository extends JpaRepository<Tutor, Long>, JpaSpecificationExecutor<Tutor> {
 
     @Override
-    @EntityGraph(attributePaths = {"department"})
+    @EntityGraph(attributePaths = {"department", "subjects"})
     Optional<Tutor> findById(Long id);
 
+    @EntityGraph(attributePaths = {"department"})
     Optional<Tutor> findByUsername(String username);
-
 }

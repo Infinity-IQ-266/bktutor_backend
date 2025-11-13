@@ -13,6 +13,7 @@ import com.bktutor.exception.ForbiddenException;
 import com.bktutor.exception.NotFoundException;
 import com.bktutor.repository.*;
 import com.bktutor.services.BookingService;
+import com.bktutor.services.EmailService;
 import com.bktutor.specification.BookingSpecification;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
@@ -32,19 +33,23 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final AvailabilitySlotRepository availabilitySlotRepository;
     private final BookingConverter bookingConverter;
+    private final EmailService emailService;
+    private final StudentRepository studentRepository;
 
-    public BookingServiceImpl(BookingRepository bookingRepository, UserRepository userRepository, AvailabilitySlotRepository availabilitySlotRepository, BookingConverter bookingConverter) {
+    public BookingServiceImpl(BookingRepository bookingRepository, UserRepository userRepository, AvailabilitySlotRepository availabilitySlotRepository, BookingConverter bookingConverter, EmailService emailService, StudentRepository studentRepository) {
         this.bookingRepository = bookingRepository;
         this.userRepository = userRepository;
         this.availabilitySlotRepository = availabilitySlotRepository;
         this.bookingConverter = bookingConverter;
+        this.emailService = emailService;
+        this.studentRepository = studentRepository;
     }
 
     @Override
     @Transactional
     @PreAuthorize("hasRole('STUDENT')")
     public BookingDto createBooking(CreateBookingDto createDto, String studentUsername) {
-        Student student = (Student) userRepository.findByUsername(studentUsername)
+        Student student = studentRepository.findByUsername(studentUsername)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND));
 
         AvailabilitySlot slot = availabilitySlotRepository.findById(createDto.getSlotId())
@@ -77,7 +82,11 @@ public class BookingServiceImpl implements BookingService {
         }
         newBooking.setStatus(BookingStatus.PENDING);
 
-        return bookingConverter.convertToDTO(bookingRepository.save(newBooking));
+        Booking savedBooking = bookingRepository.save(newBooking);
+
+        emailService.sendNewBookingNotificationToTutor(savedBooking);
+
+        return bookingConverter.convertToDTO(savedBooking);
     }
 
     @Override

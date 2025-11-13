@@ -12,6 +12,13 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@NamedEntityGraph(
+        name = "tutor-with-department-and-subjects",
+        attributeNodes = {
+                @NamedAttributeNode("department"),
+                @NamedAttributeNode("subjects")
+        }
+)
 public class Tutor extends User {
     private String staffId;
     private String position;
@@ -23,7 +30,7 @@ public class Tutor extends User {
     private float averageRating;
     private String officeLocation;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private Department department;
 

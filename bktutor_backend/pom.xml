@@ -99,6 +99,15 @@
 			<groupId>org.springframework.ai</groupId>
 			<artifactId>spring-ai-starter-model-postgresml-embedding</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>com.github.gavlyukovskiy</groupId>
+            <artifactId>p6spy-spring-boot-starter</artifactId>
+            <version>1.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
 	</dependencies>
 
 	<build>

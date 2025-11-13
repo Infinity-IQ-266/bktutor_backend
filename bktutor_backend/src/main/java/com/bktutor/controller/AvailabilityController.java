@@ -1,11 +1,15 @@
 package com.bktutor.controller;
 
+import com.bktutor.common.dtos.AvailabilitySlotDto;
 import com.bktutor.common.dtos.UpdateAvailabilityDto;
 import com.bktutor.response.Response;
 import com.bktutor.services.AvailabilityService;
 import com.bktutor.utils.SecurityUtil;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -22,9 +26,9 @@ public class AvailabilityController {
         return new Response(availabilityService.updateTutorAvailability(request, username));
     }
     @GetMapping("/tutors/me/availability")
-    public Response getMyAvailability() {
+    public List<AvailabilitySlotDto> getMyAvailability() {
         String username = SecurityUtil.getUsername();
-        return new Response(availabilityService.getMyAvailability(username));
+        return availabilityService.getMyAvailability(username);
     }
 
     @GetMapping("/tutors/{tutorId}/availability")

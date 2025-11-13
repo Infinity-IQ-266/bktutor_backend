@@ -15,6 +15,12 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@NamedEntityGraph(
+        name = "student-with-department",
+        attributeNodes = {
+                @NamedAttributeNode("department")
+        }
+)
 public class Student extends User {
     private String studentId;
     private String major;
@@ -24,11 +30,11 @@ public class Student extends User {
     private String learningGoals;
     private LocalDateTime enrollDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private Department department;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_tutor_id")
     private Tutor assignedTutor;
 
