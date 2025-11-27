@@ -9,7 +9,9 @@ import jakarta.validation.Valid;
 public interface AuthenticationService {
 
     AuthenticationResponse registerUser(@Valid RegisterRequest request);
+
     AuthenticationResponse login(@Valid LoginRequest request);
+
     UserDetailDto getMe(String username);
 
 }

@@ -13,7 +13,9 @@ public enum ErrorMessage {
     TUTOR_NOT_FOUND(404, 1008 , "Tutor not found" ),
     BAD_REQUEST(400, 1009, "Bad request"),
     AVAILABILITY_SLOT_NOT_FOUND(404, 1010, "Availability slot not found"),
-    BOOKING_NOT_FOUND(404, 1011, "Booking not found");
+    BOOKING_NOT_FOUND(404, 1011, "Booking not found"),
+    MATERIAL_NOT_FOUND(404, 1012, "Material not found"),
+    NOT_FOUND(404, 1013, "Not found");
     
     private final int httpStatus;
     private final int code;
