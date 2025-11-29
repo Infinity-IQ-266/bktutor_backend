@@ -1,6 +1,8 @@
 package com.bktutor.services.impl;
 
+import com.bktutor.common.dtos.MaterialDownloadResponse;
 import com.bktutor.common.dtos.MaterialDto;
+import com.bktutor.common.dtos.S3ObjectResponse;
 import com.bktutor.common.entity.Material;
 import com.bktutor.common.entity.Student;
 import com.bktutor.common.entity.Tutor;
@@ -52,6 +54,7 @@ public class MaterialServiceImpl implements MaterialService {
         material.setFileType(getFileExtension(Objects.requireNonNull(file.getOriginalFilename())));
         material.setFileSize(file.getSize());
         material.setS3Key(s3Key);
+        material.setOriginalFilename(file.getOriginalFilename());
         material.setSource(MaterialSource.UPLOADED);
         material.setTutor(tutor);
 
@@ -98,11 +101,18 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
-    public byte[] downloadMaterial(Long materialId, String username) {
+    public MaterialDownloadResponse downloadMaterial(Long materialId, String username) {
+
         Material material = materialRepository.findById(materialId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND));
 
-        return s3Service.downloadFile(material.getS3Key());
+        S3ObjectResponse s3Obj = s3Service.downloadFile(material.getS3Key());
+
+        return MaterialDownloadResponse.builder()
+                .data(s3Obj.getData())
+                .contentType(s3Obj.getContentType())
+                .originalFilename(material.getOriginalFilename())
+                .build();
     }
 
 

@@ -28,6 +28,8 @@ public class Material {
     private String s3Key;
     private String externalUrl;
 
+    private String originalFilename;
+
     @Enumerated(EnumType.STRING)
     private MaterialSource source;
 

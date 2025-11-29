@@ -1,9 +1,13 @@
 package com.bktutor.controller;
 
+import com.bktutor.common.dtos.MaterialDownloadResponse;
+import com.bktutor.common.dtos.S3ObjectResponse;
 import com.bktutor.common.dtos.ShareMaterialRequest;
+import com.bktutor.common.entity.Material;
 import com.bktutor.response.Response;
 import com.bktutor.services.MaterialService;
 import com.bktutor.utils.SecurityUtil;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -59,10 +63,13 @@ public class MaterialController {
     @GetMapping("/{id}/download")
     public ResponseEntity<byte[]> downloadMaterial(@PathVariable Long id) {
         String username = SecurityUtil.getUsername();
-        byte[] data = materialService.downloadMaterial(id, username);
+        MaterialDownloadResponse file = materialService.downloadMaterial(id, username);
 
         return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=\"downloaded_file\"")
-                .body(data);
+                .contentType(MediaType.parseMediaType(file.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + file.getOriginalFilename() + "\"")
+                .body(file.getData());
     }
+
 }

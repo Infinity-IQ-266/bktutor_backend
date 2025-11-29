@@ -1,6 +1,8 @@
 package com.bktutor.services;
 
+import com.bktutor.common.dtos.MaterialDownloadResponse;
 import com.bktutor.common.dtos.MaterialDto;
+import com.bktutor.common.dtos.S3ObjectResponse;
 import com.bktutor.common.enums.ErrorMessage;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,5 +18,5 @@ public interface MaterialService {
 
     List<MaterialDto> getSharedWithMe(String username);
 
-    byte[] downloadMaterial(Long id, String username);
+    MaterialDownloadResponse downloadMaterial(Long id, String username);
 }

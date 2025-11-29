@@ -1,5 +1,6 @@
 package com.bktutor.services.impl;
 
+import com.bktutor.common.dtos.S3ObjectResponse;
 import com.bktutor.services.S3Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -42,12 +43,19 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
-    public byte[] downloadFile(String key) {
+    public S3ObjectResponse downloadFile(String key) {
         ResponseBytes<GetObjectResponse> objectAsBytes =
-                s3Client.getObjectAsBytes(GetObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(key)
-                        .build());
-        return objectAsBytes.asByteArray();
+                s3Client.getObjectAsBytes(
+                        GetObjectRequest.builder()
+                                .bucket(bucketName)
+                                .key(key)
+                                .build()
+                );
+
+        return new S3ObjectResponse(
+                objectAsBytes.asByteArray(),
+                objectAsBytes.response().contentType()
+        );
     }
+
 }
