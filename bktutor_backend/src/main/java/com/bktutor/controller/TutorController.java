@@ -4,6 +4,7 @@ import com.bktutor.common.dtos.TutorSearchDto;
 import com.bktutor.common.enums.DirectionEnum;
 import com.bktutor.response.Response;
 import com.bktutor.services.TutorService;
+import com.bktutor.utils.SecurityUtil;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,5 +38,11 @@ public class TutorController {
     @GetMapping("{tutorId}")
     public Response getTutorById(@PathVariable Long tutorId) {
         return new Response(tutorService.findTutorById(tutorId));
+    }
+
+    @GetMapping("/dashboard")
+    public Response getTutorDashboard(){
+        String username = SecurityUtil.getUsername();
+        return new Response(tutorService.getDashboardData(username));
     }
 }
