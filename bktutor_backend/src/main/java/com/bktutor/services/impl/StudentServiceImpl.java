@@ -14,6 +14,8 @@ import com.bktutor.repository.BookingRepository;
 import com.bktutor.repository.SessionLogRepository;
 import com.bktutor.repository.UserRepository;
 import com.bktutor.services.StudentService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +53,7 @@ public class StudentServiceImpl implements StudentService {
         List<Booking> upcomingBookings = bookingRepository.findTop5ByStudentIdAndStatusOrderBySlot_StartTimeAsc(studentId, BookingStatus.CONFIRMED);
         List<BookingDto> upcomingSessionDtos = bookingConverter.convertEntitiesToDTOs(upcomingBookings);
 
-        List<SessionLog> recentLogs = sessionLogRepository.findRecentLogsByStudentId(studentId, 2);
+        List<SessionLog> recentLogs = sessionLogRepository.findRecentLogsByStudentId(studentId, PageRequest.of(0, 2));
         List<RecentProgressDto> recentProgressDtos = recentLogs.stream().map(log -> {
             RecentProgressDto dto = new RecentProgressDto();
             dto.setSubject(log.getBooking().getSubject());

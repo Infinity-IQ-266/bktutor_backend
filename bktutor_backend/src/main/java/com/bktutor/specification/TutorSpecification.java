@@ -5,8 +5,8 @@ import com.bktutor.common.entity.Tutor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 
 @Component
 public class TutorSpecification {
@@ -15,9 +15,6 @@ public class TutorSpecification {
         return (root, query, cb) -> {
             if (!StringUtils.hasText(name)) {
                 return null;
-            }
-            if (query.getResultType() != Long.class && query.getResultType() != long.class) {
-                root.fetch("department", jakarta.persistence.criteria.JoinType.LEFT);
             }
             return cb.like(cb.lower(root.get("fullName")), "%" + name.toLowerCase() + "%");
         };
@@ -28,10 +25,8 @@ public class TutorSpecification {
             if (!StringUtils.hasText(departmentName)) {
                 return null;
             }
-            if (query.getResultType() != Long.class && query.getResultType() != long.class) {
-                root.fetch("department", jakarta.persistence.criteria.JoinType.LEFT);
-            }
-            Join<Tutor, Department> departmentJoin = root.join("department");
+            // Chỉ join để filter
+            Join<Tutor, Department> departmentJoin = root.join("department", JoinType.LEFT);
             return cb.equal(departmentJoin.get("name"), departmentName);
         };
     }

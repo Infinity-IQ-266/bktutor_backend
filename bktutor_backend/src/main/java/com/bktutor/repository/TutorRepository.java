@@ -1,6 +1,9 @@
 package com.bktutor.repository;
 
 import com.bktutor.common.entity.Tutor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -18,4 +21,8 @@ public interface TutorRepository extends JpaRepository<Tutor, Long>, JpaSpecific
 
     @EntityGraph(attributePaths = {"department"})
     Optional<Tutor> findByUsername(String username);
+
+    @Override
+    @EntityGraph(attributePaths = {"department"})
+    Page<Tutor> findAll(Specification<Tutor> spec, Pageable pageable);
 }

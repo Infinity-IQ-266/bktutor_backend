@@ -4,6 +4,7 @@ import com.bktutor.common.entity.Booking;
 import com.bktutor.common.enums.BookingStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -13,24 +14,27 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpecificationExecutor<Booking> {
 
-    Page<Booking> findByStudentIdAndStatus(Long studentId, BookingStatus status, Pageable pageable);
+    @Override
+    @EntityGraph(attributePaths = {"student", "slot", "slot.tutor"})
+    Page<Booking> findAll(Specification<Booking> spec, Pageable pageable);
 
-    Page<Booking> findBySlot_TutorIdAndStatus(Long tutorId, BookingStatus status, Pageable pageable);
+    @Override
+    @EntityGraph(attributePaths = {"student", "slot", "slot.tutor"})
+    Optional<Booking> findById(Long id);
 
-    Page<Booking> findByStudentId(Long studentId, Pageable pageable);
+    @EntityGraph(attributePaths = {"slot", "slot.tutor"})
+    List<Booking> findTop5ByStudentIdAndStatusOrderBySlot_StartTimeAsc(Long studentId, BookingStatus status);
 
-    Page<Booking> findBySlot_TutorId(Long tutorId, Pageable pageable);
-
-    long countByStudentIdAndStatus(Long studentId, BookingStatus status);
+    @EntityGraph(attributePaths = {"student", "slot"})
+    List<Booking> findTop5BySlot_TutorIdAndStatusOrderBySlot_StartTimeAsc(Long tutorId, BookingStatus status);
 
     long countByStudentIdAndStatusNot(Long studentId, BookingStatus status);
-
-    List<Booking> findTop5ByStudentIdAndStatusOrderBySlot_StartTimeAsc(Long studentId, BookingStatus status);
+    long countByStudentIdAndStatus(Long studentId, BookingStatus status); // Method này bị lặp trong code cũ, kiểm tra lại logic
 
     @Query("SELECT COUNT(DISTINCT b.slot.tutor) FROM Booking b WHERE b.student.id = :studentId")
     long countDistinctTutorsByStudentId(@Param("studentId") Long studentId);
@@ -51,10 +55,4 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
     long countActiveStudentsByTutorId(@Param("tutorId") Long tutorId);
 
     long countBySlot_TutorIdAndStatus(Long tutorId, BookingStatus status);
-
-    @EntityGraph(attributePaths = {
-            "student",
-            "slot",
-    })
-    List<Booking> findTop5BySlot_TutorIdAndStatusOrderBySlot_StartTimeAsc(Long tutorId, BookingStatus status);
 }

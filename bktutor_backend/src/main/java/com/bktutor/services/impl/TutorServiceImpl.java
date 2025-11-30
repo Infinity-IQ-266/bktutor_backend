@@ -26,9 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TutorServiceImpl implements TutorService {
@@ -93,7 +91,7 @@ public class TutorServiceImpl implements TutorService {
         List<Booking> upcomingBookings = bookingRepository.findTop5BySlot_TutorIdAndStatusOrderBySlot_StartTimeAsc(tutorId, BookingStatus.CONFIRMED);
         List<BookingDto> upcomingSessionDtos = bookingConverter.convertEntitiesToDTOs(upcomingBookings);
 
-        List<Feedback> feedbacks = feedbackRepository.findRecentFeedbackByTutorId(tutorId, 5);
+        List<Feedback> feedbacks = feedbackRepository.findRecentFeedbackByTutorId(tutorId, PageRequest.of(0, 5));
         List<TutorDashboardDto.RecentFeedbackDto> feedbackDtos = feedbacks.stream().map(f -> {
             TutorDashboardDto.RecentFeedbackDto dto = new TutorDashboardDto.RecentFeedbackDto();
             dto.setId(f.getId());
