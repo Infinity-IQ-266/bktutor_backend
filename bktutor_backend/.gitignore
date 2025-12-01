@@ -32,7 +32,7 @@ build/
 .vscode/
 
 #.env
-application.properties
+src/main/resources/application.properties
 application.yml
 
 # Ignore config files
