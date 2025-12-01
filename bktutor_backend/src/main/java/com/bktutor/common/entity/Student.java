@@ -34,9 +34,9 @@ public class Student extends User {
     @JoinColumn(name = "department_id")
     private Department department;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assigned_tutor_id")
-    private Tutor assignedTutor;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "assigned_tutor_id")
+//    private Tutor assignedTutor;
 
     @OneToMany(mappedBy = "student")
     private List<Booking> bookings;

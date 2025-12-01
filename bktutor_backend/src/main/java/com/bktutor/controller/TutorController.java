@@ -5,6 +5,8 @@ import com.bktutor.common.enums.DirectionEnum;
 import com.bktutor.response.Response;
 import com.bktutor.services.TutorService;
 import com.bktutor.utils.SecurityUtil;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -44,5 +46,15 @@ public class TutorController {
     public Response getTutorDashboard(){
         String username = SecurityUtil.getUsername();
         return new Response(tutorService.getDashboardData(username));
+    }
+
+    @GetMapping("/me/students")
+    public Response getMyStudents(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        String username = SecurityUtil.getUsername();
+        Pageable pageable = PageRequest.of(page, size);
+        return new Response(tutorService.getMyStudents(username, pageable));
     }
 }

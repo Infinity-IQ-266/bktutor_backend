@@ -34,8 +34,8 @@ public class Tutor extends User {
     @JoinColumn(name = "department_id")
     private Department department;
 
-    @OneToMany(mappedBy = "assignedTutor")
-    private List<Student> assignedStudents;
+//    @OneToMany(mappedBy = "assignedTutor")
+//    private List<Student> assignedStudents;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(

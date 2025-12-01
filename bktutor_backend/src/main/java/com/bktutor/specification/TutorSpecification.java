@@ -25,7 +25,6 @@ public class TutorSpecification {
             if (!StringUtils.hasText(departmentName)) {
                 return null;
             }
-            // Chỉ join để filter
             Join<Tutor, Department> departmentJoin = root.join("department", JoinType.LEFT);
             return cb.equal(departmentJoin.get("name"), departmentName);
         };

@@ -9,6 +9,7 @@ import com.bktutor.common.entity.Tutor;
 import com.bktutor.common.entity.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+
 import java.util.stream.Collectors;
 
 @Component("userConverter")
@@ -19,6 +20,7 @@ public class UserConverter extends SuperConverter<UserDetailDto, User> {
     public UserConverter(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
+
 
     public UserDetailDto convertToDTO(User entity) {
         if (entity instanceof Student) {
@@ -35,6 +37,16 @@ public class UserConverter extends SuperConverter<UserDetailDto, User> {
         if (student.getDepartment() != null) {
             dto.setDepartmentName(student.getDepartment().getName());
         }
+        if (student.getStudentId() != null) {
+            dto.setStudentId(student.getStudentId());
+        }
+        if (student.getMajor() != null) {
+            dto.setMajor(student.getMajor());
+        }
+        if (student.getClassName() != null) {
+            dto.setClassName(student.getClassName());
+        }
+        dto.setAcademicYear(student.getAcademicYear());
         return dto;
     }
 

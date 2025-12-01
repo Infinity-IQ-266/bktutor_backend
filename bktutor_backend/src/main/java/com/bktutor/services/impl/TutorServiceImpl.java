@@ -1,19 +1,19 @@
 package com.bktutor.services.impl;
 
-import com.bktutor.common.dtos.BookingDto;
-import com.bktutor.common.dtos.TutorDashboardDto;
-import com.bktutor.common.dtos.TutorDto;
-import com.bktutor.common.dtos.TutorSearchDto;
+import com.bktutor.common.dtos.*;
 import com.bktutor.common.entity.Booking;
 import com.bktutor.common.entity.Feedback;
+import com.bktutor.common.entity.Student;
 import com.bktutor.common.entity.Tutor;
 import com.bktutor.common.enums.BookingStatus;
 import com.bktutor.common.enums.ErrorMessage;
 import com.bktutor.converter.BookingConverter;
 import com.bktutor.converter.TutorConverter;
+import com.bktutor.converter.UserConverter;
 import com.bktutor.exception.NotFoundException;
 import com.bktutor.repository.BookingRepository;
 import com.bktutor.repository.FeedbackRepository;
+import com.bktutor.repository.StudentRepository;
 import com.bktutor.repository.TutorRepository;
 import com.bktutor.services.TutorService;
 import com.bktutor.specification.TutorSpecification;
@@ -36,13 +36,17 @@ public class TutorServiceImpl implements TutorService {
     private final FeedbackRepository feedbackRepository;
     private final TutorConverter tutorConverter;
     private final BookingConverter bookingConverter;
+    private final StudentRepository studentRepository;
+    private final UserConverter userConverter;
 
-    public TutorServiceImpl(TutorRepository tutorRepository, BookingRepository bookingRepository, TutorConverter tutorConverter, FeedbackRepository feedbackRepository, BookingConverter bookingConverter) {
+    public TutorServiceImpl(TutorRepository tutorRepository, BookingRepository bookingRepository, TutorConverter tutorConverter, FeedbackRepository feedbackRepository, BookingConverter bookingConverter, StudentRepository studentRepository, UserConverter userConverter) {
         this.tutorRepository = tutorRepository;
         this.bookingRepository = bookingRepository;
         this.tutorConverter = tutorConverter;
         this.feedbackRepository = feedbackRepository;
         this.bookingConverter = bookingConverter;
+        this.studentRepository = studentRepository;
+        this.userConverter = userConverter;
     }
 
     @Override
@@ -112,5 +116,13 @@ public class TutorServiceImpl implements TutorService {
         dashboardDto.setRecentFeedback(feedbackDtos);
 
         return dashboardDto;
+    }
+
+    @Override
+    public Page<StudentDetailDto> getMyStudents(String username, Pageable pageable) {
+        Tutor tutor = tutorRepository.findByUsername(username).
+                orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND, "Tutor not found"));
+        Page<Student> students = studentRepository.findStudentsByTutorId(tutor.getId(), pageable);
+        return students.map(s -> (StudentDetailDto) userConverter.convertToDTO(s));
     }
 }
