@@ -1,9 +1,6 @@
 package com.bktutor.services;
 
-import com.bktutor.common.dtos.StudentDetailDto;
-import com.bktutor.common.dtos.TutorDashboardDto;
-import com.bktutor.common.dtos.TutorDto;
-import com.bktutor.common.dtos.TutorSearchDto;
+import com.bktutor.common.dtos.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,4 +12,6 @@ public interface TutorService {
     TutorDashboardDto getDashboardData(String username);
 
     Page<StudentDetailDto> getMyStudents(String username, Pageable pageable);
+
+    Page<FeedbackDto> getMyFeedbacks(String username, Pageable pageable);
 }

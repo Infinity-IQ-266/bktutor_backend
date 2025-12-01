@@ -8,6 +8,7 @@ import com.bktutor.common.entity.Tutor;
 import com.bktutor.common.enums.BookingStatus;
 import com.bktutor.common.enums.ErrorMessage;
 import com.bktutor.converter.BookingConverter;
+import com.bktutor.converter.FeedbackConverter;
 import com.bktutor.converter.TutorConverter;
 import com.bktutor.converter.UserConverter;
 import com.bktutor.exception.NotFoundException;
@@ -38,8 +39,9 @@ public class TutorServiceImpl implements TutorService {
     private final BookingConverter bookingConverter;
     private final StudentRepository studentRepository;
     private final UserConverter userConverter;
+    private final FeedbackConverter feedbackConverter;
 
-    public TutorServiceImpl(TutorRepository tutorRepository, BookingRepository bookingRepository, TutorConverter tutorConverter, FeedbackRepository feedbackRepository, BookingConverter bookingConverter, StudentRepository studentRepository, UserConverter userConverter) {
+    public TutorServiceImpl(TutorRepository tutorRepository, BookingRepository bookingRepository, TutorConverter tutorConverter, FeedbackRepository feedbackRepository, BookingConverter bookingConverter, StudentRepository studentRepository, UserConverter userConverter, FeedbackConverter feedbackConverter) {
         this.tutorRepository = tutorRepository;
         this.bookingRepository = bookingRepository;
         this.tutorConverter = tutorConverter;
@@ -47,6 +49,7 @@ public class TutorServiceImpl implements TutorService {
         this.bookingConverter = bookingConverter;
         this.studentRepository = studentRepository;
         this.userConverter = userConverter;
+        this.feedbackConverter = feedbackConverter;
     }
 
     @Override
@@ -124,5 +127,15 @@ public class TutorServiceImpl implements TutorService {
                 orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND, "Tutor not found"));
         Page<Student> students = studentRepository.findStudentsByTutorId(tutor.getId(), pageable);
         return students.map(s -> (StudentDetailDto) userConverter.convertToDTO(s));
+    }
+
+    @Override
+    public Page<FeedbackDto> getMyFeedbacks(String username, Pageable pageable) {
+        Tutor tutor = tutorRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.USER_NOT_FOUND));
+
+        Page<Feedback> feedbacks = feedbackRepository.findByTutorId(tutor.getId(), pageable);
+
+        return feedbacks.map(feedbackConverter::convertToDTO);
     }
 }

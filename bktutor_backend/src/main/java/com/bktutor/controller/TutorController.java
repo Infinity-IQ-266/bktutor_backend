@@ -7,6 +7,7 @@ import com.bktutor.services.TutorService;
 import com.bktutor.utils.SecurityUtil;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,13 +38,14 @@ public class TutorController {
                 .build();
         return new Response(tutorService.searchTutors(searchDto));
     }
+
     @GetMapping("{tutorId}")
     public Response getTutorById(@PathVariable Long tutorId) {
         return new Response(tutorService.findTutorById(tutorId));
     }
 
     @GetMapping("/dashboard")
-    public Response getTutorDashboard(){
+    public Response getTutorDashboard() {
         String username = SecurityUtil.getUsername();
         return new Response(tutorService.getDashboardData(username));
     }
@@ -56,5 +58,15 @@ public class TutorController {
         String username = SecurityUtil.getUsername();
         Pageable pageable = PageRequest.of(page, size);
         return new Response(tutorService.getMyStudents(username, pageable));
+    }
+
+    @GetMapping("/me/feedbacks")
+    public Response getMyFeedbacks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        String username = SecurityUtil.getUsername();
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return new Response (tutorService.getMyFeedbacks(username, pageable));
     }
 }
