@@ -85,9 +85,10 @@ public class MaterialServiceImpl implements MaterialService {
             throw new RuntimeException("You do not own this material");
         }
 
-        List<Student> students = studentRepository.findAllById(studentIds);
+        List<Student> students = studentRepository.findByStudentIds(studentIds);
 
         material.getRecipients().addAll(students);
+
         materialRepository.save(material);
     }
 

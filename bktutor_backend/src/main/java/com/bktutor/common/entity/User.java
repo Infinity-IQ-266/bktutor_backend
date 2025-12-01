@@ -25,9 +25,13 @@ public abstract class User extends Auditable {
     private String password;
 
     private String fullName;
+
     private String email;
+
     private String phone;
+
     private String avatarUrl;
+
     private boolean isActive = true;
 
     @Column(nullable = false)

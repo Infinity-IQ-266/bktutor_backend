@@ -22,12 +22,19 @@ import java.util.List;
         }
 )
 public class Student extends User {
+
     private String studentId;
+
     private String major;
+
     private int academicYear;
+
     private String className;
+
     private String supportNeed;
+
     private String learningGoals;
+
     private LocalDateTime enrollDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
